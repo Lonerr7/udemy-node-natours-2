@@ -76,9 +76,7 @@ app.patch('/api/v1/tours/:id', (req, res) => {
   }
 
   const updatedTour = { ...tour, ...req.body };
-  const updatedTours = tours.map((t) =>
-    t.id === +tour.id ? updatedTour : t
-  );
+  const updatedTours = tours.map((t) => (t.id === +tour.id ? updatedTour : t));
 
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
@@ -89,6 +87,30 @@ app.patch('/api/v1/tours/:id', (req, res) => {
         data: {
           tour: updatedTour,
         },
+      });
+    }
+  );
+});
+
+// Deleting a tour
+app.delete('/api/v1/tours/:id', (req, res) => {
+  const tour = tours.find((el) => +req.params.id === el.id);
+
+  if (!tour) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID!',
+    });
+  }
+
+  const updatedTours = [...tours].filter((t) => t.id !== +tour.id);
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(updatedTours),
+    (err) => {
+      res.status(204).json({
+        status: 'success',
+        tours: null,
       });
     }
   );
