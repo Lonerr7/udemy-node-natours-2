@@ -13,6 +13,7 @@ const tours = JSON.parse(
 );
 
 //* ===================== Routing =====================
+
 // Getting all tours
 app.get('/api/v1/tours', (req, res) => {
   res.status(200).json({
@@ -20,6 +21,25 @@ app.get('/api/v1/tours', (req, res) => {
     results: tours.length,
     data: {
       tours,
+    },
+  });
+});
+
+// Getting a tour by its id
+app.get('/api/v1/tours/:id', (req, res) => {
+  const tour = tours.find((el) => +req.params.id === el.id);
+
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID!',
+    });
+  }
+
+  res.status(200).json({
+    message: 'success',
+    data: {
+      tour,
     },
   });
 });
@@ -44,19 +64,38 @@ app.post('/api/v1/tours', (req, res) => {
   );
 });
 
-// Getting a tour by its id
-app.get('/api/v1/tours/:id', (req, res) => {
+// Updating a tour. PUT - the app recieves an entire updated object. PATCH - only some props are updated on an object
+app.patch('/api/v1/tours/:id', (req, res) => {
   const tour = tours.find((el) => +req.params.id === el.id);
 
-  res.status(200).json({
-    message: 'success',
-    data: {
-      tour,
-    },
-  });
+  if (!tour) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID!',
+    });
+  }
+
+  const updatedTour = { ...tour, ...req.body };
+  const updatedTours = tours.map((t) =>
+    t.id === +tour.id ? updatedTour : t
+  );
+
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(updatedTours),
+    (err) => {
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tour: updatedTour,
+        },
+      });
+    }
+  );
 });
 
 //* ===================== Starting a server =====================
+
 const port = 8000;
 app.listen(port, () => {
   console.log(`App running on port: ${port}...`);
