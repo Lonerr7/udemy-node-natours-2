@@ -24,6 +24,7 @@ app.get('/api/v1/tours', (req, res) => {
   });
 });
 
+// Adding a new tour
 app.post('/api/v1/tours', (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = { ...req.body, id: newId };
@@ -43,6 +44,7 @@ app.post('/api/v1/tours', (req, res) => {
   );
 });
 
+// Getting a tour by its id
 app.get('/api/v1/tours/:id', (req, res) => {
   const tour = tours.find((el) => +req.params.id === el.id);
 
