@@ -1,20 +1,25 @@
 const express = require('express');
+const fs = require('fs');
 
 const app = express();
 
-// Routing
-app.get('/', (req, res, next) => {
+const tours = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+);
+
+//* Routing
+// Getting all tours
+app.get('/api/v1/tours', (req, res) => {
   res.status(200).json({
     status: 'success',
-    message: 'Hello from the server side!',
+    results: tours.length,
+    data: {
+      tours,
+    },
   });
 });
 
-app.post('/', (req, res) => {
-  res.send('You can POST to this URL')
-})
-
-// Starting a server
+//* Starting a server
 const port = 8000;
 app.listen(port, () => {
   console.log(`App running on port: ${port}...`);
