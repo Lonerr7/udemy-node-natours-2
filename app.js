@@ -14,8 +14,7 @@ const tours = JSON.parse(
 
 //* ===================== Routing =====================
 
-// Getting all tours
-app.get('/api/v1/tours', (req, res) => {
+const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
     results: tours.length,
@@ -23,10 +22,9 @@ app.get('/api/v1/tours', (req, res) => {
       tours,
     },
   });
-});
+};
 
-// Getting a tour by its id
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTour = (req, res) => {
   const tour = tours.find((el) => +req.params.id === el.id);
 
   if (!tour) {
@@ -42,10 +40,9 @@ app.get('/api/v1/tours/:id', (req, res) => {
       tour,
     },
   });
-});
+};
 
-// Adding a new tour
-app.post('/api/v1/tours', (req, res) => {
+const createTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = { ...req.body, id: newId };
 
@@ -62,10 +59,9 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
-});
+};
 
-// Updating a tour. PUT - the app recieves an entire updated object. PATCH - only some props are updated on an object
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
   const tour = tours.find((el) => +req.params.id === el.id);
 
   if (!tour) {
@@ -90,10 +86,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       });
     }
   );
-});
+};
 
-// Deleting a tour
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour = (req, res) => {
   const tour = tours.find((el) => +req.params.id === el.id);
 
   if (!tour) {
@@ -114,11 +109,16 @@ app.delete('/api/v1/tours/:id', (req, res) => {
       });
     }
   );
-});
+};
+
+// Getting all tours or creating a new tour
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+// Getting a tour by id or updating a tour or deleting a tour
+app.route('api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour);
 
 //* ===================== Starting a server =====================
 
-const port = 8000;
+const port = 8000; 
 app.listen(port, () => {
   console.log(`App running on port: ${port}...`);
 });
