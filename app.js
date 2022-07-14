@@ -43,6 +43,17 @@ app.post('/api/v1/tours', (req, res) => {
   );
 });
 
+app.get('/api/v1/tours/:id', (req, res) => {
+  const tour = tours.find((el) => +req.params.id === el.id);
+
+  res.status(200).json({
+    message: 'success',
+    data: {
+      tour,
+    },
+  });
+});
+
 //* ===================== Starting a server =====================
 const port = 8000;
 app.listen(port, () => {
