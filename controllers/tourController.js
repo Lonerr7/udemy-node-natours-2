@@ -4,12 +4,27 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+//* ================= Middleware functions =================
+
 // Param middleware function which checks if id is correct
 exports.checkId = (req, res, next, val) => {
   if (val > tours.length) {
     return res.status(404).json({
       status: 'fail',
       message: 'Invalid ID',
+    });
+  }
+
+  next();
+};
+
+exports.checkBody = (req, res, next) => {
+  const { name, price } = req.body;
+
+  if (!name || !price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'You need to specify name and price when creating a new tour!',
     });
   }
 
@@ -46,7 +61,7 @@ exports.createTour = (req, res) => {
 
   tours.push(newTour);
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
       res.status(201).json({
@@ -66,7 +81,7 @@ exports.updateTour = (req, res) => {
   const updatedTours = tours.map((t) => (t.id === +tour.id ? updatedTour : t));
 
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(updatedTours),
     (err) => {
       res.status(200).json({
@@ -84,7 +99,7 @@ exports.deleteTour = (req, res) => {
 
   const updatedTours = [...tours].filter((t) => t.id !== +tour.id);
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(updatedTours),
     (err) => {
       res.status(204).json({
