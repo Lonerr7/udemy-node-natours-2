@@ -7,8 +7,8 @@ const app = express();
 
 //* ===================== Middlewares =====================
 
-// Logging middleware
-app.use(morgan('dev'));
+// Logging middleware (works only in development mode)
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // Out of the box express doesn't put body of POST request to req object. Using this middleware we put data into req object
 app.use(express.json());
