@@ -13,6 +13,9 @@ app.use(morgan('dev'));
 // Out of the box express doesn't put body of POST request to req object. Using this middleware we put data into req object
 app.use(express.json());
 
+// Serving static files
+app.use(express.static(`${__dirname}/public`));
+
 // Our own middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
