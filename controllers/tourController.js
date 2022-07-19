@@ -21,7 +21,7 @@ exports.getAllTours = async (req, res) => {
       const sortBy = sort.split(',').join(' ');
       query = query.sort(sortBy);
     } else {
-      query = query.sort('createdAt');
+      query = query.sort('_id');
     }
 
     // 3) Fields limiting
@@ -29,6 +29,13 @@ exports.getAllTours = async (req, res) => {
       const limitBy = fields.split(',').join(' ');
       query = query.select(limitBy);
     }
+
+    // 4) Pagination
+    const numPage = +page || 1;
+    const numLimit = +limit || 3;
+    const skip = (numPage - 1) * numLimit;
+
+    query = query.skip(skip).limit(numLimit);
 
     // EXECUTE QUERY
     const tours = await query;
