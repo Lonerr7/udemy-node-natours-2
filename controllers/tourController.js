@@ -1,4 +1,5 @@
 const Tour = require('../models/tourModel');
+const { apiFeatures } = require('../utils/apiFeatures');
 
 //* ================= Middleware functions =================
 
@@ -18,31 +19,16 @@ exports.getAllTours = async (req, res) => {
     const { page, sort, limit, fields, ...queryObj } = req.query;
 
     // 1B) Advanced filtering. If we don't have those parametres it won't replace them.
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-
-    let query = Tour.find(JSON.parse(queryStr));
+    let query = apiFeatures.filter(queryObj);
 
     // 2) Sorting
-    if (sort) {
-      const sortBy = sort.split(',').join(' ');
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort('_id');
-    }
+    query = apiFeatures.sort(sort, query);
 
     // 3) Fields limiting
-    if (fields) {
-      const limitBy = fields.split(',').join(' ');
-      query = query.select(limitBy);
-    }
+    query = apiFeatures.limitFields(fields, query);
 
     // 4) Pagination
-    const numPage = +page || 1;
-    const numLimit = +limit || 12;
-    const skip = (numPage - 1) * numLimit;
-
-    query = query.skip(skip).limit(numLimit);
+    query = apiFeatures.paginate(page, limit, query);
 
     // EXECUTE QUERY
     const tours = await query;
