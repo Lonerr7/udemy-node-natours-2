@@ -4,6 +4,13 @@ const Tour = require('../models/tourModel');
 
 //* ================= Route Handlers =================
 
+exports.aliasTopTours = (req, res, next) => {
+  req.query.sort = '-ratingsAverage,price';
+  req.query.limit = '5';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   try {
     // BUILD QUERY
@@ -32,7 +39,7 @@ exports.getAllTours = async (req, res) => {
 
     // 4) Pagination
     const numPage = +page || 1;
-    const numLimit = +limit || 3;
+    const numLimit = +limit || 12;
     const skip = (numPage - 1) * numLimit;
 
     query = query.skip(skip).limit(numLimit);
