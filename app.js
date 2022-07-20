@@ -30,6 +30,14 @@ app.use('/api/v1/tours', tourRouter);
 // USERS
 app.use('/api/v1/users', userRouter);
 
+// HANDLER FOR INVALID ROUTE
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server!`
+  })
+});
+
 //* ===================== Exporting a server =====================
 // We start a server in server.js file
 module.exports = app;
