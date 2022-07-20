@@ -25,7 +25,7 @@ exports.apiFeatures = {
   },
   paginate: (page, limit, query) => {
     const numPage = +page || 1;
-    const numLimit = +limit || 3;
+    const numLimit = +limit || 22;
     const skip = (numPage - 1) * numLimit;
 
     return query.skip(skip).limit(numLimit);
