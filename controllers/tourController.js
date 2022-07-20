@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
 const { apiFeatures } = require('../utils/apiFeatures');
+const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
 //* ================= Middleware functions =================
@@ -43,8 +44,10 @@ exports.getAllTours = catchAsync(async (req, res) => {
   });
 });
 
-exports.getTour = catchAsync(async (req, res) => {
+exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id); // it is a shorthand to writing Tour.findOne({_id: req.params.id})
+
+  if (!tour) return next(new AppError('No tour found with that ID', 404));
 
   res.status(200).json({
     message: 'success',
@@ -65,11 +68,14 @@ exports.createTour = catchAsync(async (req, res) => {
   });
 });
 
-exports.updateTour = catchAsync(async (req, res) => {
+exports.updateTour = catchAsync(async (req, res, next) => {
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // to return an updated document
     runValidators: true,
   });
+
+  if (!updatedTour)
+    return next(new AppError('No tour found with that ID', 404));
 
   res.status(200).json({
     status: 'success',
@@ -79,8 +85,11 @@ exports.updateTour = catchAsync(async (req, res) => {
   });
 });
 
-exports.deleteTour = catchAsync(async (req, res) => {
-  await Tour.findByIdAndDelete(req.params.id);
+exports.deleteTour = catchAsync(async (req, res, next) => {
+  const deletedTour = await Tour.findByIdAndDelete(req.params.id);
+
+  if (!deletedTour)
+    return next(new AppError('No tour found with that ID', 404));
 
   res.status(204).json({
     status: 'success',
