@@ -46,7 +46,8 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
 });
 
-//* ===================== Encrypting a password =====================
+//* ===================== Middlewares =====================
+// Encrypting a password
 userSchema.pre('save', async function (next) {
   // Only run this funciton if password is created or modified
   if (!this.isModified('password')) return next();
@@ -56,6 +57,16 @@ userSchema.pre('save', async function (next) {
 
   // Delete passwordConfirm
   this.passwordConfirm = undefined;
+  next();
+});
+
+// Setting passwordChangedAt property
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
+
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
