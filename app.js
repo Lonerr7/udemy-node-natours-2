@@ -2,6 +2,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 const express = require('express');
 const morgan = require('morgan');
 const tourRouter = require('./routes/tourRoutes');
@@ -33,6 +34,20 @@ app.use(express.json({ limit: '20kb' }));
 // Data sanitazation. It reads the data in req.body and cleans it against NoSQL and XSS
 app.use(mongoSanitize()); // NoSQL attacks
 app.use(xss()); // Against malicious code
+
+// Preventing parameter pollution
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  })
+);
 
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
