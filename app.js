@@ -1,4 +1,5 @@
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const express = require('express');
 const morgan = require('morgan');
 const tourRouter = require('./routes/tourRoutes');
@@ -9,6 +10,9 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 
 //* ===================== GLOBAL Middlewares =====================
+
+// Setting security HTTP headers
+app.use(helmet());
 
 // Logging middleware (works only in development mode)
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
@@ -22,7 +26,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Out of the box express doesn't put body of POST request to req object. Using this middleware we put data into req object
-app.use(express.json());
+app.use(express.json({ limit: '20kb' }));
 
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
