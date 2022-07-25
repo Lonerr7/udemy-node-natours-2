@@ -1,3 +1,4 @@
+const rateLimit = require('express-rate-limit');
 const express = require('express');
 const morgan = require('morgan');
 const tourRouter = require('./routes/tourRoutes');
@@ -7,10 +8,18 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
-//* ===================== Middlewares =====================
+//* ===================== GLOBAL Middlewares =====================
 
 // Logging middleware (works only in development mode)
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
+
+// Rate limiting middleware
+const limiter = rateLimit({
+  max: 100,
+  windiwMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour!',
+});
+app.use('/api', limiter);
 
 // Out of the box express doesn't put body of POST request to req object. Using this middleware we put data into req object
 app.use(express.json());
