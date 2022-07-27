@@ -33,6 +33,19 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+//* ===================== Middlewares =====================
+
+reviewSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'tour',
+  }).populate({
+    path: 'user',
+    select: '-role -__v'
+  });
+
+  next();
+});
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;

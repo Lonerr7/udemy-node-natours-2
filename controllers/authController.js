@@ -48,6 +48,7 @@ exports.signUp = catchAsync(async (req, res) => {
     role: req.body.role,
   });
 
+  newUser.__v = undefined;
 
   createSendToken(newUser, 201, res);
 });

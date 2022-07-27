@@ -7,6 +7,7 @@ const express = require('express');
 const morgan = require('morgan');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -65,6 +66,9 @@ app.use('/api/v1/tours', tourRouter);
 
 // USERS
 app.use('/api/v1/users', userRouter);
+
+// REVIEWS
+app.use('/api/v1/reviews', reviewRouter);
 
 // HANDLER FOR INVALID ROUTE
 app.all('*', (req, res, next) => {
