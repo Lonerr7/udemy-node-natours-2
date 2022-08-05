@@ -4,7 +4,12 @@ const catchAsync = require('../utils/catchAsync');
 //* ================= Route Handlers =================
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Review.find();
+  let filterObj = {};
+  if (req.params.tourId) filterObj = { tour: req.params.tourId };
+
+  console.log(`From getAllReviews`);
+
+  const reviews = await Review.find(filterObj);
 
   res.status(200).json({
     status: 'success',

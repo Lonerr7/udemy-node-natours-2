@@ -13,7 +13,7 @@ const {
 
 const router = express.Router();
 
-// Nested route
+// NESTED ROUTE
 router.use('/:tourId/reviews', reviewRouter);
 
 // Before /:id, because Express now thinks "top-5-cheap" is the value of ":id" parameter if I place it below the "/:id" route
