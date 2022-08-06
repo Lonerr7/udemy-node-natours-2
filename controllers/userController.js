@@ -4,6 +4,11 @@ const catchAsync = require('../utils/catchAsync');
 const filterObj = require('../utils/filterObj');
 const factory = require('./handlerFactory');
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create an error if user POSTed password data
   if (req.body.password || req.body.passwordConfirm) {
