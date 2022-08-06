@@ -1,11 +1,11 @@
-const Tour = require('../models/tourModel');
-
 exports.apiFeatures = {
-  filter: (queryObj) => {
+  filter: (queryObj, Model, filterObj) => {
+    const query = Model.find(filterObj);
+
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    return Tour.find(JSON.parse(queryStr));
+    return query.find(JSON.parse(queryStr));
   },
   sort: (sort, query) => {
     if (sort) {

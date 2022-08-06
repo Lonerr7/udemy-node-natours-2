@@ -13,6 +13,7 @@ const {
   deleteMe,
   deleteUser,
   updateUser,
+  getUser,
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -30,6 +31,6 @@ router.delete('/deleteMe', protect, deleteMe);
 
 router.route('/').get(getAllUsers);
 
-router.route('/:id').patch(updateUser).delete(deleteUser);
+router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 module.exports = router;

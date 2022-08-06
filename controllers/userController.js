@@ -4,17 +4,6 @@ const catchAsync = require('../utils/catchAsync');
 const filterObj = require('../utils/filterObj');
 const factory = require('./handlerFactory');
 
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      users,
-    },
-  });
-});
-
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create an error if user POSTed password data
   if (req.body.password || req.body.passwordConfirm) {
@@ -52,7 +41,8 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getAllUsers = factory.getAll(User);
 // do NOT update passwords with this
+exports.getUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);
-
 exports.deleteUser = factory.deleteOne(User);
