@@ -1,13 +1,13 @@
 const Review = require('../models/reviewModel');
 const catchAsync = require('../utils/catchAsync');
+const factory = require('./handlerFactory');
 
 //* ================= Route Handlers =================
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
   let filterObj = {};
+  // Allowing nested GET endpoint
   if (req.params.tourId) filterObj = { tour: req.params.tourId };
-
-  console.log(`From getAllReviews`);
 
   const reviews = await Review.find(filterObj);
 
@@ -34,3 +34,5 @@ exports.createReview = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.deleteReview = factory.deleteOne(Review );
