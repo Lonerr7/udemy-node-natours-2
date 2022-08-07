@@ -111,6 +111,11 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// === Indexies ===
+// Creating a list of price indexies sorted in an in ascending order (возрастание)
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 // Virtual properties. Can't use them in a query as they're not part of the DB
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
@@ -120,7 +125,7 @@ tourSchema.virtual('durationWeeks').get(function () {
 tourSchema.virtual('reviews', {
   ref: 'Review', // ref: the name of the model
   foreignField: 'tour', // the name of the field in reviewModel were the reference to the current model is stored (id)
-  localField: '_id'
+  localField: '_id',
 });
 
 // DOCUMENT MIDDLEWARE (Mongoose middleware)
